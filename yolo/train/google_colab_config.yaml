@@ -1,0 +1,12 @@
+
+path: '/content/gdrive/My Drive/train_instruments' # dataset root dir
+train: 'train/images/train'  # train images (relative to 'path')
+val: 'train/images/train'  # val images (relative to 'path')
+
+# Classes
+nc: 4
+names:
+  0: orange_pliers
+  1: yellow_pliers
+  2: screwdriver
+  3: knife
