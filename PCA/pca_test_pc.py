@@ -15,6 +15,10 @@ try:
         
         mask = cv2.inRange(hsv, lower, upper)
         
+        # kernel = np.ones((5,5), np.uint8)
+        # mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+        # mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+        
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
 
@@ -24,15 +28,17 @@ try:
             cv2.drawContours(img, contours, 0, (0, 255, 0), 3, cv2.LINE_AA)
             largest = contours[0]
             cv2.drawContours(img, largest, -1, (255, 0, 0), 3, cv2.LINE_AA)
-            # for i in contours:
-            #     x, y, w, h = cv2.boundingRect(i)
-            #     cv2.putText(img, f'{cv2.contourArea}')
+
             largest = largest.reshape(-1, 2).astype(np.float32)
             
             if len(largest) > 2:
                 mean, eig = cv2.PCACompute(largest, mean=None)
 
                 dir = eig[0]
+                # print(dir[0], dir[1], end=' ')
+                if dir[1] > 0:
+                    dir = -dir
+                # print(dir[0], dir[1])
                 angle = np.degrees(np.arctan2(-dir[1], dir[0]))
 
                 center = tuple([int(i) for i in mean[0]])
@@ -40,6 +46,7 @@ try:
 
                 cv2.circle(img, center, 5, (0, 0, 255), -1)
                 cv2.arrowedLine(img, center, end, (0, 0, 255), 2)
+
 
 
 
