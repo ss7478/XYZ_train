@@ -40,6 +40,9 @@ try:
                     dir = -dir
                 # print(dir[0], dir[1])
                 angle = np.degrees(np.arctan2(-dir[1], dir[0]))
+                angle = -angle + 90
+                print(angle)
+                cv2.putText(img, f'angle: {round(angle, 1)}', (20, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1, cv2.LINE_AA)
 
                 center = tuple([int(i) for i in mean[0]])
                 end = (int(center[0] + dir[0] * 100), int(center[1] + dir[1] * 100))
