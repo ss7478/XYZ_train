@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
 
-lower = (66, 148, 151)
-upper = (109, 255, 255)
+lower = (52, 89, 63)
+upper = (179, 255, 255)
 
 try:
     cap = cv2.VideoCapture(0)
@@ -23,11 +23,14 @@ try:
 
 
         if contours: 
-            contours = sorted(list(contours), key=lambda x: cv2.boundingRect(x))
+            contours = sorted(list(contours), key=lambda x: cv2.contourArea(x), reverse=True)
             cv2.drawContours(img, contours[1::], -1, (255, 255, 255), 3, cv2.LINE_AA)
             cv2.drawContours(img, contours, 0, (0, 255, 0), 3, cv2.LINE_AA)
             largest = contours[0]
             cv2.drawContours(img, largest, -1, (255, 0, 0), 3, cv2.LINE_AA)
+            # for i in contours:
+            #     x, y, w, h = cv2.boundingRect(i)
+            #     cv2.putText(img, f'{cv2.contourArea}')
             largest = largest.reshape(-1, 2).astype(np.float32)
             
             if len(largest) > 2:
