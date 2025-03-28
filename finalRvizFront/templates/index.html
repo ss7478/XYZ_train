@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>XYZBlades command center</title>
+        <meta charset="UTF-8">
+        <meta lang="en">
+        <h1>XYZBlades team drone webpage</h1>
+        <link rel="stylesheet" href="static/style.css">
+    </head>
+    <body>
+        <button class="start" onclick="send_start()">Старт</button>
+        <button class="stop" onclick="send_stop()">Стоп</button>
+        <button class="pause" onclick="send_pause()">Пауза</button>
+        <button class="killswitch" onclick="send_kill()">Kill</button>
+        <button class="btntopic" onclick="change_topic('raw')">IMAGE RAW</button>
+        <button class="btntopic" onclick="change_topic('colordebug')">COLOR DEBUG</button>
+        <button class="btntopic" onclick="change_topic('maskdebug')">MASK DEBUG</button>
+        <button class="btntopic" onclick="change_topic('arucodetect')">ARUCO DETECT</button>
+        <br><br>
+        <div class="cont">
+            <div class="map_square"></div>
+            <div class="topic_debug"></div>
+            <div class="coords_log"></div>
+        </div>
+    </body>
+
+    <script>
+
+        function send_start()
+        {
+            fetch('/start_handle');
+        }
+
+        function send_stop()
+        {
+            fetch('/stop_handle');
+        }
+
+        function send_pause()
+        {
+            fetch('/pause_handle');
+        }
+
+        function send_kill()
+        {
+            fetch('/kill_handle');
+        }
+
+        const topics =
+        {
+            raw: 'http://192.168.50.50:8080/stream?topic=/main_camera/image_raw',
+            colordebug: 'http://192.168.50.50:8080/stream?topic=/color_debug',
+            maskdebug: 'http://192.168.50.50:8080/stream?topic=/mask_debug',
+            arucodetect: 'http://192.168.50.50:8080/stream?topic=/aruco_detect/debug',
+        }
+
+        function change_topic(topic)
+        {
+            document.querySelector('.topic_debug').style.backgroundImage = `url('${topics[topic]}')`;
+        }
+
+
+        let marks = [];
+        let coordslog = [];
+
+        const xcount = 4;
+        const ycount = 4;
+
+        function fetchmarks()
+        {
+            const mapdiv = document.getElementsByClassName("map_square")[0];
+            const coordslogdiv = document.getElementsByClassName("coords_log")[0];
+            fetch('/get_marks')
+            .then(response => response.json())
+            .then(data => {
+                    marks = data.marks;
+                    // console.log(marks);
+                    mapdiv.innerHTML = '';
+                    coordslog = [];
+                    marks.forEach(mark => {
+                        const markElement = document.createElement('div');
+                        const x = mark[0] * (600 / xcount) + (600 / xcount - 30) / 2;
+                        const y = mark[1] * (600 / ycount) + (600 / ycount - 30) / 2;
+                        let form = '';
+                        if(mark[3] == 'square')
+                            form = 'mark_square';
+                        else if(mark[3] == 'circle')
+                            form = 'mark_circle';
+                        else
+                            form = 'mark_triangle';
+                        console.log(mark[3]);
+                        markElement.className = form;
+                        markElement.style.backgroundColor = mark[2];
+                        markElement.style.left = `${x}px`;
+                        markElement.style.bottom = `${y}px`;
+                        mapdiv.appendChild(markElement);
+
+                        const coordsElement = document.createElement('div');
+                        coordsElement.className = 'coords';
+                        coordsElement.innerText = `${mark[0]};${mark[1]}`;
+                        coordsElement.style.left = `${x - 4}px`;
+                        coordsElement.style.bottom = `${y + 31}px`;
+                        mapdiv.appendChild(coordsElement);
+
+                        switch(mark[2])
+                        {
+                            case 'red':
+                                color = 'красный';
+                                break;
+                            case 'blue':
+                                color = 'синий';
+                                break;
+                            case 'green':
+                                color = 'зеленый';
+                                break;
+                            case 'yellow':
+                                color = 'желтый';
+                                break;
+                            default:
+                                color = 'неизвестный';
+                                break;
+                        }
+                        coordslog.push(`X: ${mark[0]}; Y: ${mark[1]}, цвет: ${color}`);
+                    });
+                })
+                .catch(error => console.error('Ошибка:', error));
+            console.log(coordslog)
+            coordslogdiv.innerText = coordslog.join('\n');
+        }
+
+        setInterval(fetchmarks, 500);
+    </script>
+</html>
