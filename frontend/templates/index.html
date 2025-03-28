@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>XYZBlades webpage</title>
+        <title>XYZBlades command center</title>
         <meta charset="UTF-8">
         <meta lang="en">
         <h1>XYZBlades team drone webpage</h1>
@@ -12,9 +12,16 @@
         <button class="stop" onclick="send_stop()">Стоп</button>
         <button class="pause" onclick="send_pause()">Пауза</button>
         <button class="killswitch" onclick="send_kill()">Kill</button>
+        <button class="btntopic" onclick="change_topic('raw')">IMAGE RAW</button>
+        <button class="btntopic" onclick="change_topic('colordebug')">COLOR DEBUG</button>
+        <button class="btntopic" onclick="change_topic('maskdebug')">MASK DEBUG</button>
+        <button class="btntopic" onclick="change_topic('arucodetect')">ARUCO DETECT</button>
         <br><br>
-        <div class="map_square"></div>
-        <div class="coords_log"></div>
+        <div class="cont">
+            <div class="map_square"></div>
+            <div class="topic_debug"></div>
+            <div class="coords_log"></div>
+        </div>
     </body>
 
     <script>
@@ -37,6 +44,19 @@
         function send_kill()
         {
             fetch('/kill_handle');
+        }
+
+        const topics =
+        {
+            raw: 'http://192.168.50.50:8080/stream?topic=/main_camera/image_raw',
+            colordebug: 'http://192.168.50.50:8080/stream?topic=/main_camera/color_debug',
+            maskdebug: 'http://192.168.50.50:8080/stream?topic=/main_camera/mask_debug',
+            arucodetect: 'http://192.168.50.50:8080/stream?topic=/aruco_detect/debug',
+        }
+
+        function change_topic(topic)
+        {
+            document.querySelector('.topic_debug').style.backgroundImage = `url('${topics[topic]}')`;
         }
         
         
