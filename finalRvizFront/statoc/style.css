@@ -1,45 +1,103 @@
-from flask import Flask, render_template, jsonify
+.start {
+    background-color: rgb(0, 255, 0);
+    width: 150px;
+    height: 100px;
+    font-size: 50px;
+}
 
+.stop {
+    background-color: rgb(255, 0, 0);
+    width: 150px;
+    height: 100px;
+    font-size: 50px;
+}
 
-class Web:
-    def __init__(self):
-        self.app = Flask(__name__)
-        self.button_flags = None
-        self.marks = None
+.pause {
+    background-color: rgb(255, 255, 0);
+    width: 150px;
+    height: 100px;
+    font-size: 50px;
+}
 
-    def create_routes(self):
-        @self.app.route('/')
-        def onstart():
-            print('app started')
-            return render_template('index.html')
+.killswitch {
+    background-color: rgb(0, 0, 255);
+    width: 150px;
+    height: 100px;
+    font-size: 50px;
+}
 
-        @self.app.route('/start_handle')
-        def start_pressed():
-            self.button_flags["start"] = True
-            self.button_flags["stop"] = False
-            return jsonify({'message': 'start handled'})
+.map_square {
+    width: 600px;
+    height: 600px;
+    /*background-color: rgb(150, 150, 150);*/
+    background-image: url("http://192.168.50.50:8080/stream?topic=/aruco_map/image");
+    /*background-image: url("http://192.168.50.50:8080/stream?topic=/main_camera/image_raw");*/
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 4px solid black;
+    position: relative;
+}
 
-        @self.app.route('/stop_handle')
-        def stop_pressed():
-            self.button_flags["start"] = False
-            self.button_flags["stop"] = True
-            return jsonify({'message': 'stop handled'})
+.mark_triangle {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
 
-        @self.app.route('/pause_handle')
-        def pause_pressed():
-            self.button_flags["pause"] = not self.button_flags["pause"]
-            return jsonify({'message': 'pause handled'})
+.mark_circle {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    clip-path: circle(50% at 50% 50%);
+}
 
-        @self.app.route('/kill_handle')
-        def kill_pressed():
-            self.button_flags["killswitch"] = not self.button_flags["killswitch"]
-            return jsonify({'message': 'kill handled'})
+.mark_square {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border: 2px solid black;
+}
 
-        @self.app.route('/get_marks')
-        def send_marks():
-            # print('received request, sent' + str(self.marks))
-            return jsonify({'marks': list(self.marks)})
+.topic_debug {
+    width: 600px;
+    height: 600px;
+    background-image: url("http://192.168.50.50:8080/stream?topic=/main_camera/image_raw");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: relative;
+    left: 30px;
+}
 
+.coords {
+    position: absolute;
+    font-size: 25px;
+    font-family: 'Courier New', Courier, monospace;
+}
 
-web = Web()
-web.create_routes()
+.coords_log {
+    position: relative;
+    font-size: 25px;
+    font-family: 'Courier New', Courier, monospace;
+    left: 30px;
+}
+
+.map_square, .coords_log {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.cont {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.btntopic {
+    background-color: rgb(150, 150, 150);
+    width: 150px;
+    height: 70px;
+    font-size: 30px;
+}
