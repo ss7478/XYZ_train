@@ -29,9 +29,8 @@
 .map_square {
     width: 600px;
     height: 600px;
-    /*background-color: rgb(150, 150, 150);*/
-    background-image: url("http://192.168.50.50:8080/stream?topic=/aruco_map/image");
-    /*background-image: url("http://192.168.50.50:8080/stream?topic=/main_camera/image_raw");*/
+    background-color: rgb(150, 150, 150);
+    /* background-image: url("http://127.0.0.1:8080/stream?topic=/aruco_map/image"); */
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -58,12 +57,13 @@
     width: 30px;
     height: 30px;
     border: 2px solid black;
+    transform: translate(-50%, 50%);
 }
 
 .topic_debug {
     width: 600px;
     height: 600px;
-    background-image: url("http://192.168.50.50:8080/stream?topic=/main_camera/image_raw");
+    background-color: rgb(150, 150, 150);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
