@@ -25,22 +25,22 @@
     </body>
 
     <script>
-        
+
         function send_start()
         {
             fetch('/start_handle');
         }
-        
+
         function send_stop()
         {
             fetch('/stop_handle');
         }
-        
+
         function send_pause()
         {
             fetch('/pause_handle');
         }
-        
+
         function send_kill()
         {
             fetch('/kill_handle');
@@ -48,24 +48,27 @@
 
         const topics =
         {
-            raw: 'http://192.168.50.50:8080/stream?topic=/main_camera/image_raw',
-            colordebug: 'http://192.168.50.50:8080/stream?topic=/main_camera/color_debug',
-            maskdebug: 'http://192.168.50.50:8080/stream?topic=/main_camera/mask_debug',
-            arucodetect: 'http://192.168.50.50:8080/stream?topic=/aruco_detect/debug',
+            raw: ':8080/stream?topic=/main_camera/image_raw',
+            colordebug: ':8080/stream?topic=/color_debug',
+            maskdebug: ':8080/stream?topic=/mask_debug',
+            arucodetect: ':8080/stream?topic=/aruco_detect/debug',
         }
+
+        const ip_addr = window.location.hostname;
 
         function change_topic(topic)
         {
-            document.querySelector('.topic_debug').style.backgroundImage = `url('${topics[topic]}')`;
+            document.querySelector('.topic_debug').style.backgroundImage = `url('http://${ip_addr}${topics[topic]}')`;
+            console.log(ip_addr);
         }
-        
-        
+
+
         let marks = [];
         let coordslog = [];
-        
-        const xcount = 4;
-        const ycount = 4;
-        
+
+        const xcount = 10;
+        const ycount = 10;
+
         function fetchmarks()
         {
             const mapdiv = document.getElementsByClassName("map_square")[0];
@@ -79,8 +82,10 @@
                     coordslog = [];
                     marks.forEach(mark => {
                         const markElement = document.createElement('div');
-                        const x = mark[0] * (600 / xcount) + (600 / xcount - 30) / 2;
-                        const y = mark[1] * (600 / ycount) + (600 / ycount - 30) / 2;
+                        //const x = mark[0] * (600 / xcount) + (600 / xcount - 30) / 2;
+                        //const y = mark[1] * (600 / ycount) + (600 / ycount - 30) / 2;
+                        const x = (230 + mark[0] * (1540 / (xcount - 1))) * 0.3;
+                        const y = (230 + mark[1] * (1540 / (ycount - 1))) * 0.3;
                         let form = '';
                         if(mark[3] == 'square')
                             form = 'mark_square';
@@ -127,7 +132,8 @@
             console.log(coordslog)
             coordslogdiv.innerText = coordslog.join('\n');
         }
-        
+
         setInterval(fetchmarks, 500);
+        document.querySelector('.map_square').style.backgroundImage = `url('http://${ip_addr}:8080/stream?topic=/aruco_map/image')`;
     </script>
 </html>
