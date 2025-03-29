@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify
 
+
 class Web:
     def __init__(self):
         self.app = Flask(__name__)
@@ -33,7 +34,7 @@ class Web:
         def kill_pressed():
             self.button_flags["killswitch"] = not self.button_flags["killswitch"]
             return jsonify({'message': 'kill handled'})
-        
+
         @self.app.route('/get_marks')
         def send_marks():
             # print('received request, sent' + str(self.marks))
