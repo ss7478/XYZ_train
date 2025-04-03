@@ -7,7 +7,7 @@ import numpy as np
 def nothing(*args):
     pass
 
-cap = cv2.VideoCapture('http://192.168.11.1:8080/stream?topic=/main_camera/image_raw')
+cap = cv2.VideoCapture('http://192.168.50.50:8080/stream?topic=/main_camera/image_raw')
 # cap = cv2.VideoCapture(0)
 
 # cv2.namedWindow("result")
